@@ -140,8 +140,15 @@ echo "5. Press Ctrl+C at any time to stop the server.\n\n";
 echo "Starting server, please wait...\n";
 sleep(2);
 
-// Start PHP's built-in web server
-$command = PHP_BINARY . " -S {$host}:{$port} nx-router.php";
+// Start PHP's built-in web server - fix for Windows paths with spaces
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    // On Windows, wrap the PHP binary path in quotes
+    $command = '"' . PHP_BINARY . '" -S ' . $host . ':' . $port . ' nx-router.php';
+} else {
+    // On Unix systems
+    $command = PHP_BINARY . ' -S ' . $host . ':' . $port . ' nx-router.php';
+}
+
 echo "\n";
 echo "╔═══════════════════════════════════════════════════════════╗\n";
 echo "║  SERVER STARTING: http://{$host}:{$port}                       ║\n";
