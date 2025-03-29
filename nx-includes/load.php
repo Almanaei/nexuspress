@@ -2016,15 +2016,3 @@ function nx_is_site_protected_by_basic_auth( $context = '' ) {
 	 */
 	return apply_filters( 'nx_is_site_protected_by_basic_auth', $is_protected, $context );
 }
-
-/**
- * Determines if a variable is a NexusPress Error.
- *
- * @since 2.1.0
- *
- * @param mixed $thing The variable to check.
- * @return bool Whether the variable is a NX_Error object.
- */
-function is_nx_error( $thing ) {
-	return ( $thing instanceof NX_Error );
-}
