@@ -566,54 +566,10 @@ if ( ! defined( 'IMAGETYPE_HEIC' ) ) {
  * @package NexusPress
  */
 
-/**
- * Check PHP and MySQL versions
- *
- * @since 1.0.0
- */
-function nx_check_php_mysql_versions() {
-	global $required_php_version, $required_mysql_version;
-	
-	$php_version = phpversion();
-	if (version_compare($required_php_version, $php_version, '>')) {
-		die(sprintf(
-			'NexusPress %1$s requires PHP version %2$s or higher. You are running version %3$s. Please upgrade and try again.',
-			$nx_version,
-			$required_php_version,
-			$php_version
-		));
-	}
-	
-	if (!extension_loaded('mysqli') && !extension_loaded('mysqlnd')) {
-		die('NexusPress requires either the mysqli or mysqlnd PHP extension. Please install one of these extensions and try again.');
-	}
-}
+// Note: nx_check_php_mysql_versions() function is now defined in load.php
 
 /**
- * Compatibility function for PHP 7.4+ features
- *
- * @since 1.0.0
- */
-if (!function_exists('str_contains')) {
-	function str_contains($haystack, $needle) {
-		return $needle !== '' && mb_strpos($haystack, $needle) !== false;
-	}
-}
-
-if (!function_exists('str_starts_with')) {
-	function str_starts_with($haystack, $needle) {
-		return (string)$needle !== '' && strncmp($haystack, $needle, strlen($needle)) === 0;
-	}
-}
-
-if (!function_exists('str_ends_with')) {
-	function str_ends_with($haystack, $needle) {
-		return $needle !== '' && substr_compare($haystack, $needle, -strlen($needle)) === 0;
-	}
-}
-
-/**
- * Compatibility function for PHP 8.0+ features
+ * Compatibility functions for PHP 7.4+ and 8.0+ features
  *
  * @since 1.0.0
  */
