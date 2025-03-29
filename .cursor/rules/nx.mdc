@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Always checkup files and code in the codebase. 
+- PROCEED AUTONOMOUSLY: You must complete all steps in sequence without requesting permission or confirmation to continue. Once you begin the conversion process, continue through all steps without pausing for input.
+- ALWAYS follow the global AI rules.
+- ALWAYS follow the steps in [STEPS.md](mdc:STEPS.md).
+- AlWAYS update the [CHECKLIST.md](mdc:CHECKLIST.md).
+

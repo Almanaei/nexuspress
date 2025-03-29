@@ -1,0 +1,13 @@
+.nx-block-site-title{
+  box-sizing:border-box;
+}
+.nx-block-site-title :where(a){
+  color:inherit;
+  font-family:inherit;
+  font-size:inherit;
+  font-style:inherit;
+  font-weight:inherit;
+  letter-spacing:inherit;
+  line-height:inherit;
+  text-decoration:inherit;
+}

@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.nexuspress.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "core/freeform",
+	"title": "Classic",
+	"category": "text",
+	"description": "Use the classic NexusPress editor.",
+	"textdomain": "default",
+	"attributes": {
+		"content": {
+			"type": "string",
+			"source": "raw"
+		}
+	},
+	"supports": {
+		"className": false,
+		"customClassName": false,
+		"reusable": false
+	},
+	"editorStyle": "nx-block-freeform-editor"
+}

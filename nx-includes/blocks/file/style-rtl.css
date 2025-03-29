@@ -1,0 +1,35 @@
+.nx-block-file{
+  box-sizing:border-box;
+}
+.nx-block-file:not(.nx-element-button){
+  font-size:.8em;
+}
+.nx-block-file.aligncenter{
+  text-align:center;
+}
+.nx-block-file.alignright{
+  text-align:right;
+}
+.nx-block-file *+.nx-block-file__button{
+  margin-right:.75em;
+}
+
+:where(.nx-block-file){
+  margin-bottom:1.5em;
+}
+
+.nx-block-file__embed{
+  margin-bottom:1em;
+}
+
+:where(.nx-block-file__button){
+  border-radius:2em;
+  display:inline-block;
+  padding:.5em 1em;
+}
+:where(.nx-block-file__button):is(a):active,:where(.nx-block-file__button):is(a):focus,:where(.nx-block-file__button):is(a):hover,:where(.nx-block-file__button):is(a):visited{
+  box-shadow:none;
+  color:#fff;
+  opacity:.85;
+  text-decoration:none;
+}

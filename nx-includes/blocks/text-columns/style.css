@@ -1,0 +1,22 @@
+.nx-block-text-columns,.nx-block-text-columns.aligncenter{
+  display:flex;
+}
+.nx-block-text-columns .nx-block-column{
+  margin:0 1em;
+  padding:0;
+}
+.nx-block-text-columns .nx-block-column:first-child{
+  margin-left:0;
+}
+.nx-block-text-columns .nx-block-column:last-child{
+  margin-right:0;
+}
+.nx-block-text-columns.columns-2 .nx-block-column{
+  width:50%;
+}
+.nx-block-text-columns.columns-3 .nx-block-column{
+  width:33.33333%;
+}
+.nx-block-text-columns.columns-4 .nx-block-column{
+  width:25%;
+}

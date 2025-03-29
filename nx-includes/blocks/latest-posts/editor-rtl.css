@@ -1,0 +1,15 @@
+.nx-block-latest-posts>li{
+  overflow:hidden;
+}
+
+.nx-block-latest-posts li a>div{
+  display:inline;
+}
+
+:root :where(.nx-block-latest-posts){
+  padding-right:2.5em;
+}
+
+:root :where(.nx-block-latest-posts.is-grid),:root :where(.nx-block-latest-posts__list){
+  padding-right:0;
+}

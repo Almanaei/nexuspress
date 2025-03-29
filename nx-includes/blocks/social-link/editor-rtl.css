@@ -1,0 +1,31 @@
+.nx-block-social-links .nx-social-link{
+  line-height:0;
+}
+
+.nx-block-social-link-anchor{
+  align-items:center;
+  background:none;
+  border:0;
+  box-sizing:border-box;
+  color:currentColor;
+  cursor:pointer;
+  display:inline-flex;
+  font-size:inherit;
+  height:auto;
+  opacity:1;
+  padding:.25em;
+}
+.nx-block-social-link-anchor:focus:not(:disabled){
+  border-radius:2px;
+  box-shadow:0 0 0 var(--nx-admin-border-width-focus) var(--nx-admin-theme-color);
+  outline:3px solid #0000;
+}
+
+:root :where(.nx-block-social-links.is-style-pill-shape .nx-social-link button){
+  padding-left:.66667em;
+  padding-right:.66667em;
+}
+
+:root :where(.nx-block-social-links.is-style-logos-only .nx-social-link button){
+  padding:0;
+}

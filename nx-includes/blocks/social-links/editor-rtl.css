@@ -1,0 +1,99 @@
+.nx-block-social-links div.block-editor-url-input{
+  display:inline-block;
+  margin-right:8px;
+}
+
+.nx-social-link:hover{
+  transform:none;
+}
+
+:root :where(.nx-block-social-links),:root :where(.nx-block-social-links.is-style-logos-only .nx-block-social-links__social-placeholder .nx-social-link){
+  padding:0;
+}
+
+:root :where(.nx-block-social-links__social-placeholder .nx-social-link){
+  padding:.25em;
+}
+
+:root :where(.nx-block-social-links.is-style-pill-shape .nx-block-social-links__social-placeholder .nx-social-link){
+  padding-left:.66667em;
+  padding-right:.66667em;
+}
+
+.nx-block-social-links__social-placeholder{
+  display:flex;
+  list-style:none;
+  opacity:.8;
+}
+.nx-block-social-links__social-placeholder>.nx-social-link{
+  margin-left:0 !important;
+  margin-right:0 !important;
+  padding-left:0 !important;
+  padding-right:0 !important;
+  visibility:hidden;
+  width:0 !important;
+}
+.nx-block-social-links__social-placeholder>.nx-block-social-links__social-placeholder-icons{
+  display:flex;
+}
+.nx-block-social-links__social-placeholder .nx-social-link:before{
+  border-radius:50%;
+  content:"";
+  display:block;
+  height:1em;
+  width:1em;
+}
+.is-style-logos-only .nx-block-social-links__social-placeholder .nx-social-link:before{
+  background:currentColor;
+}
+
+.nx-block-social-links .nx-block-social-links__social-prompt{
+  cursor:default;
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;
+  font-size:13px;
+  line-height:24px;
+  list-style:none;
+  margin-bottom:auto;
+  margin-top:auto;
+  min-height:24px;
+  padding-left:8px;
+}
+
+.nx-block.nx-block-social-links.aligncenter,.nx-block[data-align=center]>.nx-block-social-links{
+  justify-content:center;
+}
+
+.block-editor-block-preview__content .components-button:disabled{
+  opacity:1;
+}
+
+.nx-social-link.nx-social-link__is-incomplete{
+  opacity:.5;
+}
+@media (prefers-reduced-motion:reduce){
+  .nx-social-link.nx-social-link__is-incomplete{
+    transition-delay:0s;
+    transition-duration:0s;
+  }
+}
+
+.nx-block-social-links .is-selected .nx-social-link__is-incomplete,.nx-social-link.nx-social-link__is-incomplete:focus,.nx-social-link.nx-social-link__is-incomplete:hover{
+  opacity:1;
+}
+
+.nx-block-social-links .block-list-appender{
+  position:static;
+}
+.nx-block-social-links .block-list-appender .block-editor-button-block-appender.components-button.components-button{
+  padding:6px;
+}
+
+.nx-block-social-links.has-small-icon-size .block-editor-button-block-appender.components-button.components-button{
+  padding:0;
+}
+.nx-block-social-links.has-large-icon-size .block-editor-button-block-appender.components-button.components-button{
+  padding:14px;
+}
+.nx-block-social-links.has-huge-icon-size .block-editor-button-block-appender.components-button.components-button{
+  padding:23px;
+}

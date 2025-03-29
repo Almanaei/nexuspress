@@ -1,0 +1,6 @@
+.nx-block-post-comments-form *{
+  pointer-events:none;
+}
+.nx-block-post-comments-form .block-editor-warning *{
+  pointer-events:auto;
+}

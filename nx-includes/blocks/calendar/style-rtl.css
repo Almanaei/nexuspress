@@ -1,0 +1,33 @@
+.nx-block-calendar{
+  text-align:center;
+}
+.nx-block-calendar td,.nx-block-calendar th{
+  border:1px solid;
+  padding:.25em;
+}
+.nx-block-calendar th{
+  font-weight:400;
+}
+.nx-block-calendar caption{
+  background-color:inherit;
+}
+.nx-block-calendar table{
+  border-collapse:collapse;
+  width:100%;
+}
+.nx-block-calendar table:where(:not(.has-text-color)){
+  color:#40464d;
+}
+.nx-block-calendar table:where(:not(.has-text-color)) td,.nx-block-calendar table:where(:not(.has-text-color)) th{
+  border-color:#ddd;
+}
+.nx-block-calendar table.has-background th{
+  background-color:inherit;
+}
+.nx-block-calendar table.has-text-color th{
+  color:inherit;
+}
+
+:where(.nx-block-calendar table:not(.has-background) th){
+  background:#ddd;
+}

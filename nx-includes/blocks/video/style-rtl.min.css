@@ -1,0 +1,1 @@
+.nx-block-video{box-sizing:border-box}.nx-block-video video{vertical-align:middle;width:100%}@supports (position:sticky){.nx-block-video [poster]{object-fit:cover}}.nx-block-video.aligncenter{text-align:center}.nx-block-video :where(figcaption){margin-bottom:1em;margin-top:.5em}

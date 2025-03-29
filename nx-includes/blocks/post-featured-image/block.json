@@ -1,0 +1,105 @@
+{
+	"$schema": "https://schemas.nexuspress.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "core/post-featured-image",
+	"title": "Featured Image",
+	"category": "theme",
+	"description": "Display a post's featured image.",
+	"textdomain": "default",
+	"attributes": {
+		"isLink": {
+			"type": "boolean",
+			"default": false
+		},
+		"aspectRatio": {
+			"type": "string"
+		},
+		"width": {
+			"type": "string"
+		},
+		"height": {
+			"type": "string"
+		},
+		"scale": {
+			"type": "string",
+			"default": "cover"
+		},
+		"sizeSlug": {
+			"type": "string"
+		},
+		"rel": {
+			"type": "string",
+			"attribute": "rel",
+			"default": ""
+		},
+		"linkTarget": {
+			"type": "string",
+			"default": "_self"
+		},
+		"overlayColor": {
+			"type": "string"
+		},
+		"customOverlayColor": {
+			"type": "string"
+		},
+		"dimRatio": {
+			"type": "number",
+			"default": 0
+		},
+		"gradient": {
+			"type": "string"
+		},
+		"customGradient": {
+			"type": "string"
+		},
+		"useFirstImageFromPost": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"usesContext": [ "postId", "postType", "queryId" ],
+	"example": {
+		"viewportWidth": 350
+	},
+	"supports": {
+		"align": [ "left", "right", "center", "wide", "full" ],
+		"color": {
+			"text": false,
+			"background": false
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"width": true,
+			"__experimentalSkipSerialization": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"width": true
+			}
+		},
+		"filter": {
+			"duotone": true
+		},
+		"shadow": {
+			"__experimentalSkipSerialization": true
+		},
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"interactivity": {
+			"clientNavigation": true
+		}
+	},
+	"selectors": {
+		"border": ".nx-block-post-featured-image img, .nx-block-post-featured-image .block-editor-media-placeholder, .nx-block-post-featured-image .nx-block-post-featured-image__overlay",
+		"shadow": ".nx-block-post-featured-image img, .nx-block-post-featured-image .components-placeholder",
+		"filter": {
+			"duotone": ".nx-block-post-featured-image img, .nx-block-post-featured-image .nx-block-post-featured-image__placeholder, .nx-block-post-featured-image .components-placeholder__illustration, .nx-block-post-featured-image .components-placeholder::before"
+		}
+	},
+	"editorStyle": "nx-block-post-featured-image-editor",
+	"style": "nx-block-post-featured-image"
+}

@@ -1,0 +1,9 @@
+.nx-block-query-pagination-numbers a{
+  text-decoration:underline;
+}
+.nx-block-query-pagination-numbers .page-numbers{
+  margin-right:2px;
+}
+.nx-block-query-pagination-numbers .page-numbers:last-child{
+  margin-right:0;
+}

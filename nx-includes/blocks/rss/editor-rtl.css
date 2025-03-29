@@ -1,0 +1,7 @@
+.nx-block-rss li a>div{
+  display:inline;
+}
+
+.nx-block-rss__placeholder-form .nx-block-rss__placeholder-input{
+  flex:1 1 auto;
+}

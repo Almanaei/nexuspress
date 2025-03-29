@@ -1,0 +1,14 @@
+.nx-block-table{
+  margin:0 0 1em;
+}
+.nx-block-table td,.nx-block-table th{
+  word-break:normal;
+}
+.nx-block-table :where(figcaption){
+  color:#555;
+  font-size:13px;
+  text-align:center;
+}
+.is-dark-theme .nx-block-table :where(figcaption){
+  color:#ffffffa6;
+}

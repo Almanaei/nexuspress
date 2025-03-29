@@ -1,0 +1,49 @@
+.nx-block-buttons.is-vertical{
+  flex-direction:column;
+}
+.nx-block-buttons.is-vertical>.nx-block-button:last-child{
+  margin-bottom:0;
+}
+.nx-block-buttons>.nx-block-button{
+  display:inline-block;
+  margin:0;
+}
+.nx-block-buttons.is-content-justification-left{
+  justify-content:flex-start;
+}
+.nx-block-buttons.is-content-justification-left.is-vertical{
+  align-items:flex-start;
+}
+.nx-block-buttons.is-content-justification-center{
+  justify-content:center;
+}
+.nx-block-buttons.is-content-justification-center.is-vertical{
+  align-items:center;
+}
+.nx-block-buttons.is-content-justification-right{
+  justify-content:flex-end;
+}
+.nx-block-buttons.is-content-justification-right.is-vertical{
+  align-items:flex-end;
+}
+.nx-block-buttons.is-content-justification-space-between{
+  justify-content:space-between;
+}
+.nx-block-buttons.aligncenter{
+  text-align:center;
+}
+.nx-block-buttons:not(.is-content-justification-space-between,.is-content-justification-right,.is-content-justification-left,.is-content-justification-center) .nx-block-button.aligncenter{
+  margin-left:auto;
+  margin-right:auto;
+  width:100%;
+}
+.nx-block-buttons[style*=text-decoration] .nx-block-button,.nx-block-buttons[style*=text-decoration] .nx-block-button__link{
+  text-decoration:inherit;
+}
+.nx-block-buttons.has-custom-font-size .nx-block-button__link{
+  font-size:inherit;
+}
+
+.nx-block-button.aligncenter{
+  text-align:center;
+}

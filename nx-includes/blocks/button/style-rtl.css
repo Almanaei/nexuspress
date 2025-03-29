@@ -1,0 +1,77 @@
+.nx-block-button__link{
+  box-sizing:border-box;
+  cursor:pointer;
+  display:inline-block;
+  text-align:center;
+  word-break:break-word;
+}
+.nx-block-button__link.aligncenter{
+  text-align:center;
+}
+.nx-block-button__link.alignright{
+  text-align:right;
+}
+
+:where(.nx-block-button__link){
+  border-radius:9999px;
+  box-shadow:none;
+  padding:calc(.667em + 2px) calc(1.333em + 2px);
+  text-decoration:none;
+}
+
+.nx-block-button[style*=text-decoration] .nx-block-button__link{
+  text-decoration:inherit;
+}
+
+.nx-block-buttons>.nx-block-button.has-custom-width{
+  max-width:none;
+}
+.nx-block-buttons>.nx-block-button.has-custom-width .nx-block-button__link{
+  width:100%;
+}
+.nx-block-buttons>.nx-block-button.has-custom-font-size .nx-block-button__link{
+  font-size:inherit;
+}
+.nx-block-buttons>.nx-block-button.nx-block-button__width-25{
+  width:calc(25% - var(--nx--style--block-gap, .5em)*.75);
+}
+.nx-block-buttons>.nx-block-button.nx-block-button__width-50{
+  width:calc(50% - var(--nx--style--block-gap, .5em)*.5);
+}
+.nx-block-buttons>.nx-block-button.nx-block-button__width-75{
+  width:calc(75% - var(--nx--style--block-gap, .5em)*.25);
+}
+.nx-block-buttons>.nx-block-button.nx-block-button__width-100{
+  flex-basis:100%;
+  width:100%;
+}
+
+.nx-block-buttons.is-vertical>.nx-block-button.nx-block-button__width-25{
+  width:25%;
+}
+.nx-block-buttons.is-vertical>.nx-block-button.nx-block-button__width-50{
+  width:50%;
+}
+.nx-block-buttons.is-vertical>.nx-block-button.nx-block-button__width-75{
+  width:75%;
+}
+
+.nx-block-button.is-style-squared,.nx-block-button__link.nx-block-button.is-style-squared{
+  border-radius:0;
+}
+
+.nx-block-button.no-border-radius,.nx-block-button__link.no-border-radius{
+  border-radius:0 !important;
+}
+
+:root :where(.nx-block-button .nx-block-button__link.is-style-outline),:root :where(.nx-block-button.is-style-outline>.nx-block-button__link){
+  border:2px solid;
+  padding:.667em 1.333em;
+}
+:root :where(.nx-block-button .nx-block-button__link.is-style-outline:not(.has-text-color)),:root :where(.nx-block-button.is-style-outline>.nx-block-button__link:not(.has-text-color)){
+  color:currentColor;
+}
+:root :where(.nx-block-button .nx-block-button__link.is-style-outline:not(.has-background)),:root :where(.nx-block-button.is-style-outline>.nx-block-button__link:not(.has-background)){
+  background-color:initial;
+  background-image:none;
+}

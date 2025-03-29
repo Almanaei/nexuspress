@@ -1,0 +1,26 @@
+.nx-block[data-align=center]>.nx-block-button{
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+}
+
+.nx-block[data-align=right]>.nx-block-button{
+  text-align:right;
+}
+
+.nx-block-button{
+  cursor:text;
+  position:relative;
+}
+.nx-block-button:focus{
+  box-shadow:0 0 0 1px #fff, 0 0 0 3px var(--nx-admin-theme-color);
+  outline:2px solid #0000;
+  outline-offset:-2px;
+}
+.nx-block-button[data-rich-text-placeholder]:after{
+  opacity:.8;
+}
+
+div[data-type="core/button"]{
+  display:table;
+}

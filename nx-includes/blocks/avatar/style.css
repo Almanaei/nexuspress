@@ -1,0 +1,9 @@
+.nx-block-avatar{
+  line-height:0;
+}
+.nx-block-avatar,.nx-block-avatar img{
+  box-sizing:border-box;
+}
+.nx-block-avatar.aligncenter{
+  text-align:center;
+}

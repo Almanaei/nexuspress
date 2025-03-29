@@ -1,0 +1,10 @@
+:where(.nx-block-term-description){
+  box-sizing:border-box;
+  margin-bottom:var(--nx--style--block-gap);
+  margin-top:var(--nx--style--block-gap);
+}
+
+.nx-block-term-description p{
+  margin-bottom:0;
+  margin-top:0;
+}

@@ -1,0 +1,24 @@
+.nx-block-comments-pagination>.nx-block-comments-pagination-next,.nx-block-comments-pagination>.nx-block-comments-pagination-numbers,.nx-block-comments-pagination>.nx-block-comments-pagination-previous{
+  margin-bottom:.5em;
+  margin-right:.5em;
+}
+.nx-block-comments-pagination>.nx-block-comments-pagination-next:last-child,.nx-block-comments-pagination>.nx-block-comments-pagination-numbers:last-child,.nx-block-comments-pagination>.nx-block-comments-pagination-previous:last-child{
+  margin-right:0;
+}
+.nx-block-comments-pagination .nx-block-comments-pagination-previous-arrow{
+  display:inline-block;
+  margin-right:1ch;
+}
+.nx-block-comments-pagination .nx-block-comments-pagination-previous-arrow:not(.is-arrow-chevron){
+  transform:scaleX(1);
+}
+.nx-block-comments-pagination .nx-block-comments-pagination-next-arrow{
+  display:inline-block;
+  margin-left:1ch;
+}
+.nx-block-comments-pagination .nx-block-comments-pagination-next-arrow:not(.is-arrow-chevron){
+  transform:scaleX(1);
+}
+.nx-block-comments-pagination.aligncenter{
+  justify-content:center;
+}

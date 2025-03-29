@@ -1,0 +1,44 @@
+# NexusPress - Ignore Configuration and Log Files
+nx-config.php
+nx-content/uploads/
+nx-content/upgrade/
+nx-content/cache/
+nx-content/backup-db/
+nx-content/advanced-cache.php
+nx-content/object-cache.php
+nx-content/db.php
+nx-content/debug.log
+
+# Ignore sensitive data
+.htaccess
+.htpassword
+.env
+
+# Ignore system files
+*.log
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Ignore editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Ignore dependencies directories
+node_modules/
+vendor/
+
+# Ignore build files
+.sass-cache/
+dist/
+build/
+
+# Ignore backup files
+*~
+*.bak
+*.swp 

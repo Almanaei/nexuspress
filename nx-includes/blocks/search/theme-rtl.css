@@ -1,0 +1,8 @@
+.nx-block-search .nx-block-search__label{
+  font-weight:700;
+}
+
+.nx-block-search__button{
+  border:1px solid #ccc;
+  padding:.375em .625em;
+}
