@@ -209,7 +209,25 @@ function rest_api_init() {
 	rest_api_register_rewrites();
 
 	global $wp;
-	$nx->add_query_var( 'rest_route' );
+	
+	// Check if $wp is properly initialized
+	if (!isset($wp) || !is_object($wp)) {
+		// Try to load the class if it's not already available
+		if (!class_exists('WP') && file_exists(ABSPATH . 'nx-includes/class-nx.php')) {
+			require_once(ABSPATH . 'nx-includes/class-nx.php');
+		}
+		
+		// Initialize $wp if the class exists now
+		if (class_exists('WP')) {
+			$wp = new WP();
+			error_log('Warning: $wp global was not properly initialized before rest_api_init() call');
+		} else {
+			error_log('Error: Cannot initialize $wp - WP class not found');
+			return;
+		}
+	}
+	
+	$wp->add_query_var('rest_route');
 }
 
 /**

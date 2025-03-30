@@ -51,26 +51,14 @@ if ( get_option( 'db_upgraded' ) ) {
 	&& (int) get_option( 'db_version' ) !== $nx_db_version
 ) {
 
+	// For production environment, always follow normal upgrade path
 	if ( ! is_multisite() ) {
-		nx_redirect( admin_url( 'upgrade.php?_nx_http_referer=' . urlencode( nx_unslash( $_SERVER['REQUEST_URI'] ) ) ) );
+		// Fix direct path to upgrade.php instead of using admin_url to prevent circular redirects
+		nx_redirect( site_url( '/nx-admin/upgrade.php?_nx_http_referer=' . urlencode( nx_unslash( $_SERVER['REQUEST_URI'] ) ) ) );
 		exit;
 	}
-
-	/**
-	 * Filters whether to attempt to perform the multisite DB upgrade routine.
-	 *
-	 * In single site, the user would be redirected to nx-admin/upgrade.php.
-	 * In multisite, the DB upgrade routine is automatically fired, but only
-	 * when this filter returns true.
-	 *
-	 * If the network is 50 sites or less, it will run every time. Otherwise,
-	 * it will throttle itself to reduce load.
-	 *
-	 * @since MU (3.0.0)
-	 *
-	 * @param bool $do_mu_upgrade Whether to perform the Multisite upgrade routine. Default true.
-	 */
-	if ( apply_filters( 'do_mu_upgrade', true ) ) {
+	// Normal multisite upgrade process for production
+	else if ( apply_filters( 'do_mu_upgrade', true ) && function_exists('get_blog_count') ) {
 		$c = get_blog_count();
 
 		/*
@@ -80,7 +68,7 @@ if ( get_option( 'db_upgraded' ) ) {
 		if ( $c <= 50 || ( $c > 50 && mt_rand( 0, (int) ( $c / 50 ) ) === 1 ) ) {
 			require_once ABSPATH . NXINC . '/http.php';
 			$response = nx_remote_get(
-				admin_url( 'upgrade.php?step=1' ),
+				site_url( '/nx-admin/upgrade.php?step=1' ),
 				array(
 					'timeout'     => 120,
 					'httpversion' => '1.1',
@@ -96,6 +84,8 @@ if ( get_option( 'db_upgraded' ) ) {
 
 require_once ABSPATH . 'nx-admin/includes/admin.php';
 
+// Authentication handling for production environment
+// Always enforce proper authentication
 auth_redirect();
 
 // Schedule Trash collection.

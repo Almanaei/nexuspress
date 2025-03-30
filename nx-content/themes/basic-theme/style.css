@@ -1,0 +1,71 @@
+/*
+Theme Name: Basic Theme
+Theme URI: http://localhost:8000
+Author: NexusPress Dev
+Author URI: http://localhost:8000
+Description: A basic theme for debugging NexusPress
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: basic-theme
+Tags: custom-background, custom-logo, custom-menu, featured-images
+*/
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #0073aa;
+    color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin: 5px 0 0;
+}
+
+main {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+article {
+    margin-bottom: 30px;
+}
+
+h1, h2, h3 {
+    color: #0073aa;
+}
+
+a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+} 

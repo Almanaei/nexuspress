@@ -438,7 +438,7 @@ function nx_ajax_logged_in() {
 /**
  * Handles AJAX requests for comment and link deletion in no-privilege context.
  *
- * Intended to provide interoperability with the WordPress Android and iOS apps.
+ * Intended to provide interoperability with the NexusPress Android and iOS apps.
  *
  * For comment and link deletion from within the apps, this function handles authentication
  * directly. For deleting other object types such as posts, the app should authenticate
@@ -446,8 +446,8 @@ function nx_ajax_logged_in() {
  *
  * @since 3.9.3
  *
- * @see wp_ajax_delete_comment()
- * @see wp_ajax_delete_link()
+ * @see nx_ajax_delete_comment()
+ * @see nx_ajax_delete_link()
  *
  * @global NX_User $current_user The current user object.
  */

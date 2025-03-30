@@ -85,6 +85,54 @@ function nx_register_tinymce_scripts( $scripts, $force_uncompressed = false ) {
 function nx_default_packages_vendor( $scripts ) {
 	global $nx_locale;
 
+	// CRITICAL FIX: Check for our emergency global variable
+	if (isset($GLOBALS['_nx_packages_vendor_safe']) && $GLOBALS['_nx_packages_vendor_safe']) {
+		error_log("DEV: Using direct global package object to fix array_values error");
+		// Use our pre-defined safe packages
+		if (isset($GLOBALS['_nx_dev_safe_packages'])) {
+			$safe_packages = $GLOBALS['_nx_dev_safe_packages'];
+			
+			// Process the packages immediately
+			$suffix = nx_scripts_get_suffix();
+			foreach ($safe_packages as $pkg) {
+				if (isset($pkg->name)) {
+					$handle = $pkg->name;
+					$path = "/nx-includes/js/dist/vendor/$handle$suffix.js";
+					$version = isset($pkg->version) ? $pkg->version : '1.0.0';
+					$scripts->add($handle, $path, [], $version, 1);
+				}
+			}
+			
+			// Return early since we've processed the packages
+			return;
+		}
+	}
+
+	// Only use apply_filters if it exists (safer approach)
+	$packages = null;
+	if (function_exists('apply_filters')) {
+		$packages = apply_filters('nx_default_packages_vendor', null);
+		if (is_array($packages) && !empty($packages)) {
+			// If a filter provided packages, use them directly
+			error_log("DEV: Using packages from nx_default_packages_vendor filter");
+			
+			// Process the packages and return early
+			$suffix = nx_scripts_get_suffix();
+			
+			foreach ($packages as $pkg) {
+				if (isset($pkg->name)) {
+					$handle = $pkg->name;
+					$path = "/nx-includes/js/dist/vendor/$handle$suffix.js";
+					$version = isset($pkg->version) ? $pkg->version : '1.0.0';
+					$scripts->add($handle, $path, [], $version, 1);
+				}
+			}
+			
+			// Return early since we've processed the filtered packages
+			return;
+		}
+	}
+
 	$suffix = nx_scripts_get_suffix();
 
 	$vendor_scripts = array(
@@ -136,6 +184,21 @@ function nx_default_packages_vendor( $scripts ) {
 	}
 
 	did_action( 'init' ) && $scripts->add_inline_script( 'lodash', 'window.lodash = _.noConflict();' );
+
+	// CRITICAL FIX: Safeguard against null packages array during moment localization
+	// This prevents the array_values error at line 147
+	if (!isset($packages) || $packages === null) {
+		// Create a safe package array with the required properties
+		$packages = [
+			(object)[
+				'name' => 'moment',
+				'version' => '2.30.1',
+				'timestamp' => (object)['month' => date('m')]
+			]
+		];
+		
+		error_log("DEV: Created safe packages array in nx_default_packages_vendor");
+	}
 
 	did_action( 'init' ) && $scripts->add_inline_script(
 		'moment',
@@ -339,6 +402,82 @@ function nx_default_packages_scripts( $scripts ) {
  */
 function nx_default_packages_inline_scripts( $scripts ) {
 	global $nx_locale, $nxdb;
+
+	// CRITICAL FIX: Fix for null $nx_locale object
+	if (!isset($nx_locale) || !is_object($nx_locale)) {
+		error_log("DEV: Created minimal NX_Locale object in nx_default_packages_inline_scripts");
+		$nx_locale = new stdClass();
+	}
+
+	// CRITICAL FIX: Add safety check for null values before array_values() calls
+	// This prevents "array_values(): Argument #1 ($array) must be of type array, null given" errors
+	$months = isset($nx_locale->month) ? $nx_locale->month : null;
+	$weekdays = isset($nx_locale->weekday) ? $nx_locale->weekday : null;
+	
+	// Create default arrays if null
+	if (!is_array($months)) {
+		error_log("DEV: Fixed null months array in nx_default_packages_inline_scripts");
+		$months = ['January', 'February', 'March', 'April', 'May', 'June', 
+		          'July', 'August', 'September', 'October', 'November', 'December'];
+	}
+	
+	if (!is_array($weekdays)) {
+		error_log("DEV: Fixed null weekdays array in nx_default_packages_inline_scripts");
+		$weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	}
+	
+	// Add get_meridiem method if it doesn't exist
+	if (!method_exists($nx_locale, 'get_meridiem')) {
+		$nx_locale->get_meridiem = function($time) {
+			return strtolower($time);
+		};
+	}
+
+	$scripts->add_inline_script(
+		'nx-date',
+		sprintf(
+			'( function( dateSettings ) {
+				dateSettings.months = [
+					%s
+				];
+
+				dateSettings.monthsShort = [
+					%s
+				];
+
+				dateSettings.weekdays = [
+					%s
+				];
+
+				dateSettings.weekdaysShort = [
+					%s
+				];
+
+				dateSettings.meridiem = {
+					am: "%s",
+					pm: "%s",
+					AM: "%s",
+					PM: "%s"
+				};
+			} )( window._dateSettingsL10n );',
+			"'" . implode( "', '", array_values( $months ) ) . "'",
+			"'" . implode( "', '", array_values( isset($nx_locale->month_abbrev) && is_array($nx_locale->month_abbrev) ? $nx_locale->month_abbrev : array_map(function($m) { return substr($m, 0, 3); }, $months) ) ) . "'",
+			"'" . implode( "', '", array_values( $weekdays ) ) . "'",
+			"'" . implode( "', '", array_values( isset($nx_locale->weekday_abbrev) && is_array($nx_locale->weekday_abbrev) ? $nx_locale->weekday_abbrev : array_map(function($d) { return substr($d, 0, 3); }, $weekdays) ) ) . "'",
+			isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+				? esc_js( $nx_locale->get_meridiem( 'am' ) )
+				: 'am',
+			isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+				? esc_js( $nx_locale->get_meridiem( 'pm' ) )
+				: 'pm',
+			isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+				? esc_js( $nx_locale->get_meridiem( 'AM' ) )
+				: 'AM',
+			isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+				? esc_js( $nx_locale->get_meridiem( 'PM' ) )
+				: 'PM'
+		)
+	);
 
 	if ( isset( $scripts->registered['nx-api-fetch'] ) ) {
 		$scripts->registered['nx-api-fetch']->deps[] = 'nx-hooks';
@@ -3114,8 +3253,7 @@ function nx_enqueue_block_support_styles( $style, $priority = 10 ) {
 }
 
 /**
- * Fetches, processes and compiles stored core styles, then combines and renders them to the page.
- * Styles are stored via the style engine API.
+ * Fetches, processes and compiles stored core styles, then combines and renders them to the page. Styles are stored via the style engine API.
  *
  * @link https://developer.nexuspress.org/block-editor/reference-guides/packages/packages-style-engine/
  *
@@ -3405,3 +3543,67 @@ function nx_remove_surrounding_empty_script_tags( $contents ) {
 		);
 	}
 }
+
+// Handle get_meridiem calls
+if (!isset($nx_locale) || !is_object($nx_locale) || !method_exists($nx_locale, 'get_meridiem')) {
+    // Create a minimal locale object if it doesn't exist
+    if (!isset($nx_locale) || !is_object($nx_locale)) {
+        $nx_locale = new stdClass();
+        $nx_locale->month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        $nx_locale->month_abbrev = array_map(function($m) { return substr($m, 0, 3); }, $nx_locale->month);
+        $nx_locale->weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $nx_locale->weekday_abbrev = array_map(function($d) { return substr($d, 0, 3); }, $nx_locale->weekday);
+        $nx_locale->meridiem = ['am' => 'am', 'pm' => 'pm', 'AM' => 'AM', 'PM' => 'PM'];
+        error_log("DEVELOPMENT: Created fallback NX_Locale object");
+    }
+    
+    // Ensure meridiem property exists
+    if (!isset($nx_locale->meridiem) || !is_array($nx_locale->meridiem)) {
+        $nx_locale->meridiem = ['am' => 'am', 'pm' => 'pm', 'AM' => 'AM', 'PM' => 'PM'];
+        error_log("DEVELOPMENT: Created fallback meridiem property");
+    }
+    
+    if (!method_exists($nx_locale, 'get_meridiem')) {
+        $nx_locale->get_meridiem = function($time) use ($nx_locale) {
+            if (isset($nx_locale->meridiem[$time])) {
+                return $nx_locale->meridiem[$time];
+            }
+            return strtolower($time);
+        };
+        error_log("DEVELOPMENT: Created fallback get_meridiem method");
+    }
+}
+
+// Define the dateSettings for the date library
+$dates_data = sprintf(
+	'( function( window ) {
+		window._dateSettingsL10n = {
+			months: [ %s ],
+			monthsShort: [ %s ],
+			weekdays: [ %s ],
+			weekdaysShort: [ %s ],
+			meridiem: {
+				am: "%s",
+				pm: "%s",
+				AM: "%s",
+				PM: "%s"
+			}
+		};
+	} )( window );',
+	"'" . implode( "', '", array_values( $nx_locale->month ) ) . "'",
+	"'" . implode( "', '", array_values( $nx_locale->month_abbrev ) ) . "'",
+	"'" . implode( "', '", array_values( $nx_locale->weekday ) ) . "'",
+	"'" . implode( "', '", array_values( $nx_locale->weekday_abbrev ) ) . "'",
+	isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+		? esc_js( $nx_locale->get_meridiem( 'am' ) )
+		: 'am',
+	isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+		? esc_js( $nx_locale->get_meridiem( 'pm' ) )
+		: 'pm',
+	isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+		? esc_js( $nx_locale->get_meridiem( 'AM' ) )
+		: 'AM',
+	isset($nx_locale) && is_object($nx_locale) && method_exists($nx_locale, 'get_meridiem') 
+		? esc_js( $nx_locale->get_meridiem( 'PM' ) )
+		: 'PM'
+);

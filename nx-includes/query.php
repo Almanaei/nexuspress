@@ -26,6 +26,12 @@
  */
 function get_query_var( $query_var, $default_value = '' ) {
 	global $nx_query;
+	
+	// Initialize $nx_query if it's null
+	if (null === $nx_query) {
+		$nx_query = new NX_Query();
+	}
+	
 	return $nx_query->get( $query_var, $default_value );
 }
 
@@ -42,6 +48,12 @@ function get_query_var( $query_var, $default_value = '' ) {
  */
 function get_queried_object() {
 	global $nx_query;
+	
+	// Initialize $nx_query if it's null
+	if (null === $nx_query) {
+		$nx_query = new NX_Query();
+	}
+	
 	return $nx_query->get_queried_object();
 }
 
@@ -58,6 +70,12 @@ function get_queried_object() {
  */
 function get_queried_object_id() {
 	global $nx_query;
+	
+	// Initialize $nx_query if it's null
+	if (null === $nx_query) {
+		$nx_query = new NX_Query();
+	}
+	
 	return $nx_query->get_queried_object_id();
 }
 
@@ -73,6 +91,12 @@ function get_queried_object_id() {
  */
 function set_query_var( $query_var, $value ) {
 	global $nx_query;
+	
+	// Initialize $nx_query if it's null
+	if (null === $nx_query) {
+		$nx_query = new NX_Query();
+	}
+	
 	$nx_query->set( $query_var, $value );
 }
 
@@ -414,7 +438,6 @@ function is_feed( $feeds = '' ) {
 	global $nx_query;
 
 	if ( ! isset( $nx_query ) ) {
-		_doing_it_wrong( __FUNCTION__, __( 'Conditional query tags do not work before the query is run. Before then, they always return false.' ), '3.1.0' );
 		return false;
 	}
 

@@ -139,3 +139,19 @@ class NX_Widget_Factory {
 		return '';
 	}
 }
+
+/**
+ * Initialize $nx_widget_factory if it doesn't already exist
+ */
+function initialize_nx_widget_factory() {
+	global $nx_widget_factory;
+	
+	if (!isset($nx_widget_factory) || null === $nx_widget_factory) {
+		$nx_widget_factory = new NX_Widget_Factory();
+	}
+	
+	return $nx_widget_factory;
+}
+
+// Initialize the global widget factory
+initialize_nx_widget_factory();

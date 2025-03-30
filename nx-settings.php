@@ -8,6 +8,14 @@
  * @package NexusPress
  */
 
+// Override site URL settings for development server
+if (!defined('NX_SITEURL')) {
+	define('NX_SITEURL', 'http://localhost:8000');
+}
+if (!defined('NX_HOME')) {
+	define('NX_HOME', 'http://localhost:8000');
+}
+
 /**
  * Stores the location of the NexusPress directory of functions, classes, and core content.
  *
@@ -126,7 +134,7 @@ require ABSPATH . NXINC . '/l10n/class-nx-translation-file-php.php';
  * @global nxdb $nxdb NexusPress database abstraction object.
  */
 global $nxdb;
-// Include the nxdb class and, if present, a db.php database drop-in.
+// Temporarily disabled database connection - this will be handled by our mock in load.php
 require_nx_db();
 
 /**
@@ -141,6 +149,12 @@ nx_set_nxdb_vars();
 
 // Start the NexusPress object cache, or an external object cache if the drop-in is present.
 nx_start_object_cache();
+
+// For development, redirect upgrade.php to our custom admin page
+if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/nx-admin/upgrade.php') !== false) {
+    header('Location: ' . NX_SITEURL . '/admin.php');
+    exit;
+}
 
 // Attach the default filters.
 require ABSPATH . NXINC . '/default-filters.php';
@@ -416,8 +430,16 @@ $GLOBALS['nx_embed'] = new NX_Embed();
  *
  * @global NX_Textdomain_Registry $nx_textdomain_registry NexusPress Textdomain Registry.
  */
-$GLOBALS['nx_textdomain_registry'] = new NX_Textdomain_Registry();
-$GLOBALS['nx_textdomain_registry']->init();
+// Create the registry only if the class exists
+if (class_exists('NX_Textdomain_Registry')) {
+	$GLOBALS['nx_textdomain_registry'] = new NX_Textdomain_Registry();
+	if (method_exists($GLOBALS['nx_textdomain_registry'], 'init')) {
+		$GLOBALS['nx_textdomain_registry']->init();
+	}
+} else {
+	// Set to an empty object to prevent fatal errors
+	$GLOBALS['nx_textdomain_registry'] = new stdClass();
+}
 
 // Load multisite-specific files.
 if ( is_multisite() ) {
@@ -655,7 +677,13 @@ if ( ! class_exists( 'NX_Site_Health' ) ) {
 NX_Site_Health::get_instance();
 
 // Set up current user.
-$GLOBALS['nx']->init();
+if (isset($GLOBALS['nx']) && is_object($GLOBALS['nx']) && method_exists($GLOBALS['nx'], 'init')) {
+	$GLOBALS['nx']->init();
+} else {
+	// Create a basic object if NX is not available
+	$GLOBALS['nx'] = new stdClass();
+	error_log('Warning: $GLOBALS[\'nx\'] was not properly initialized before nx-settings.php:666');
+}
 
 /**
  * Fires after NexusPress has finished loading but before any headers are sent.

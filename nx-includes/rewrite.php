@@ -122,10 +122,7 @@ define( 'EP_ALL_ARCHIVES', EP_DATE | EP_YEAR | EP_MONTH | EP_DAY | EP_CATEGORIES
 define( 'EP_ALL', EP_PERMALINK | EP_ATTACHMENT | EP_ROOT | EP_COMMENTS | EP_SEARCH | EP_PAGES | EP_ALL_ARCHIVES );
 
 /**
- * Adds a rewrite rule that transforms a URL structure to a set of query vars.
- *
- * Any value in the $after parameter that isn't 'bottom' will result in the rule
- * being placed at the top of the rewrite rules.
+ * Adds a rewrite rule.
  *
  * @since 2.1.0
  * @since 4.4.0 Array support was added to the `$query` parameter.
@@ -139,6 +136,18 @@ define( 'EP_ALL', EP_PERMALINK | EP_ATTACHMENT | EP_ROOT | EP_COMMENTS | EP_SEAR
  */
 function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
 	global $nx_rewrite;
+
+	// Check if $nx_rewrite is an object before calling add_rule on it
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite)) {
+		// Try to initialize it if we can
+		if (class_exists('NX_Rewrite')) {
+			$nx_rewrite = new NX_Rewrite();
+			error_log('Warning: $nx_rewrite was not properly initialized before add_rewrite_rule() call');
+		} else {
+			error_log('Error: Cannot add rewrite rule - $nx_rewrite is not properly initialized');
+			return;
+		}
+	}
 
 	$nx_rewrite->add_rule( $regex, $query, $after );
 }
@@ -166,11 +175,38 @@ function add_rewrite_tag( $tag, $regex, $query = '' ) {
 	}
 
 	global $nx_rewrite, $wp;
+	
+	// Check if $nx_rewrite is properly initialized
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite)) {
+		// Try to initialize it if we can
+		if (class_exists('NX_Rewrite')) {
+			$nx_rewrite = new NX_Rewrite();
+			error_log('Warning: $nx_rewrite was not properly initialized before add_rewrite_tag() call');
+		} else {
+			error_log('Error: Cannot add rewrite tag - $nx_rewrite is not properly initialized');
+			return;
+		}
+	}
 
 	if ( empty( $query ) ) {
 		$qv = trim( $tag, '%' );
-		$nx->add_query_var( $qv );
-		$query = $qv . '=';
+		
+		// Check if $wp is properly initialized
+		if (!isset($wp) || !is_object($wp)) {
+			if (class_exists('NX')) {
+				$wp = new NX();
+				error_log('Warning: $wp was not properly initialized before add_rewrite_tag() call');
+			} else {
+				error_log('Error: Cannot add query var - $wp is not properly initialized');
+				// Set a default query if we can't use $wp
+				$query = $qv . '=';
+			}
+		}
+		
+		if (isset($wp) && is_object($wp)) {
+			$wp->add_query_var( $qv );
+			$query = $qv . '=';
+		}
 	}
 
 	$nx_rewrite->add_rewrite_tag( $tag, $regex, $query );
@@ -187,6 +223,13 @@ function add_rewrite_tag( $tag, $regex, $query = '' ) {
  */
 function remove_rewrite_tag( $tag ) {
 	global $nx_rewrite;
+	
+	// Check if $nx_rewrite is properly initialized
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite)) {
+		error_log('Warning: $nx_rewrite was not properly initialized before remove_rewrite_tag() call');
+		return;
+	}
+	
 	$nx_rewrite->remove_rewrite_tag( $tag );
 }
 
@@ -205,6 +248,18 @@ function remove_rewrite_tag( $tag ) {
  */
 function add_permastruct( $name, $struct, $args = array() ) {
 	global $nx_rewrite;
+	
+	// Check if $nx_rewrite is properly initialized
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite)) {
+		// Try to initialize it if we can
+		if (class_exists('NX_Rewrite')) {
+			$nx_rewrite = new NX_Rewrite();
+			error_log('Warning: $nx_rewrite was not properly initialized before add_permastruct() call');
+		} else {
+			error_log('Error: Cannot add permastruct - $nx_rewrite is not properly initialized');
+			return;
+		}
+	}
 
 	// Back-compat for the old parameters: $with_front and $ep_mask.
 	if ( ! is_array( $args ) ) {
@@ -233,6 +288,12 @@ function add_permastruct( $name, $struct, $args = array() ) {
  */
 function remove_permastruct( $name ) {
 	global $nx_rewrite;
+	
+	// Check if $nx_rewrite is properly initialized
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite)) {
+		error_log('Warning: $nx_rewrite was not properly initialized before remove_permastruct() call');
+		return;
+	}
 
 	$nx_rewrite->remove_permastruct( $name );
 }
@@ -250,6 +311,22 @@ function remove_permastruct( $name ) {
  */
 function add_feed( $feedname, $callback ) {
 	global $nx_rewrite;
+	
+	// Check if $nx_rewrite is properly initialized
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite)) {
+		// Try to initialize it if we can
+		if (class_exists('NX_Rewrite')) {
+			$nx_rewrite = new NX_Rewrite();
+			error_log('Warning: $nx_rewrite was not properly initialized before add_feed() call');
+		} else {
+			error_log('Error: Cannot add feed - $nx_rewrite is not properly initialized');
+			// Still try to register the hook for the callback
+			$hook = 'do_feed_' . $feedname;
+			remove_action($hook, $hook);
+			add_action($hook, $callback, 10, 2);
+			return $hook;
+		}
+	}
 
 	if ( ! in_array( $feedname, $nx_rewrite->feeds, true ) ) {
 		$nx_rewrite->feeds[] = $feedname;
@@ -277,10 +354,14 @@ function add_feed( $feedname, $callback ) {
  */
 function flush_rewrite_rules( $hard = true ) {
 	global $nx_rewrite;
-
-	if ( is_callable( array( $nx_rewrite, 'flush_rules' ) ) ) {
-		$nx_rewrite->flush_rules( $hard );
+	
+	// Check if $nx_rewrite is properly initialized
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite) || !is_callable(array($nx_rewrite, 'flush_rules'))) {
+		error_log('Warning: $nx_rewrite was not properly initialized before flush_rewrite_rules() call');
+		return;
 	}
+
+	$nx_rewrite->flush_rules( $hard );
 }
 
 /**
@@ -329,12 +410,52 @@ function flush_rewrite_rules( $hard = true ) {
  *                               - `EP_SEARCH`
  *                               - `EP_TAGS`
  *                               - `EP_YEAR`
- * @param string|bool $query_var Name of the corresponding query variable. Pass `false` to skip registering a query_var
- *                               for this endpoint. Defaults to the value of `$name`.
+ * @param string|bool $query_var Optional. Name of the query var to use for this endpoint. Pass `false`
+ *                               to skip registering a query var. Default is the value of `$name`.
  */
 function add_rewrite_endpoint( $name, $places, $query_var = true ) {
 	global $nx_rewrite;
-	$nx_rewrite->add_endpoint( $name, $places, $query_var );
+	
+	// Check if $nx_rewrite is properly initialized
+	if (!isset($nx_rewrite) || !is_object($nx_rewrite)) {
+		// Try to initialize it if we can
+		if (class_exists('NX_Rewrite')) {
+			$nx_rewrite = new NX_Rewrite();
+			error_log('Warning: $nx_rewrite was not properly initialized before add_rewrite_endpoint() call');
+		} else {
+			error_log('Error: Cannot add rewrite endpoint - $nx_rewrite is not properly initialized');
+			return;
+		}
+	}
+
+	// For backward compatibility.
+	if ( is_bool( $query_var ) && $query_var ) {
+		$query_var = $name;
+	}
+
+	if ( $query_var ) {
+		if (function_exists('add_query_var')) {
+			add_query_var( $query_var );
+		} else {
+			global $wp;
+			
+			// Check if $wp is properly initialized
+			if (!isset($wp) || !is_object($wp)) {
+				if (class_exists('NX')) {
+					$wp = new NX();
+					error_log('Warning: $wp was not properly initialized before add_rewrite_endpoint() call');
+				} else {
+					error_log('Error: Cannot add query var - $wp is not properly initialized');
+				}
+			}
+			
+			if (isset($wp) && is_object($wp) && method_exists($wp, 'add_query_var')) {
+				$wp->add_query_var($query_var);
+			}
+		}
+	}
+
+	$nx_rewrite->add_endpoint( $name, $places );
 }
 
 /**

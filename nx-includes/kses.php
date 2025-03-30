@@ -2778,3 +2778,43 @@ function _nx_kses_allow_pdf_objects( $url ) {
 
 	return false;
 }
+
+/**
+ * Return a list of protocols that are allowed in URLs.
+ *
+ * @since 3.3.0
+ * @since 4.3.0 Added 'webcal' to the protocols array.
+ * @since 4.7.0 Added 'tel', 'sms', 'whatsapp', 'market', 'itms', 'itms-apps'.
+ * @since 5.3.0 Added 'viber'.
+ * @since 5.6.0 Added 'skype'.
+ *
+ * @see nx_kses_allowed_protocols()
+ *
+ * @return string[] Array of allowed protocols. Defaults to an array containing 'http', 'https',
+ *               'ftp', 'ftps', 'mailto', 'news', 'irc', 'irc6', 'ircs', 'gopher', 'nntp', 'feed',
+ *               'telnet', 'mms', 'rtsp', 'sms', 'svn', 'tel', 'fax', 'xmpp', 'webcal', 'urn'.
+ */
+function nx_allowed_protocols() {
+    static $protocols;
+
+    if (empty($protocols)) {
+        $protocols = array(
+            'http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'irc6', 'ircs', 'gopher', 'nntp',
+            'feed', 'telnet', 'mms', 'rtsp', 'sms', 'svn', 'tel', 'fax', 'xmpp', 'webcal', 'urn',
+            'whatsapp', 'market', 'itms', 'itms-apps', 'viber', 'skype'
+        );
+    }
+
+    if (has_filter('kses_allowed_protocols')) {
+        /**
+         * Filters the list of protocols allowed in HTML attributes.
+         *
+         * @since 3.0.0
+         *
+         * @param string[] $protocols Array of allowed protocols e.g. 'http', 'ftp', 'tel', etc.
+         */
+        $protocols = apply_filters('kses_allowed_protocols', $protocols);
+    }
+
+    return $protocols;
+}

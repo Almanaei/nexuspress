@@ -171,4 +171,20 @@ class NX_Textdomain_Registry {
             NX_LANG_DIR,
         );
     }
+    
+    /**
+     * Initializes the registry with default text domains.
+     *
+     * @since 6.1.0
+     */
+    public function init() {
+        // Register NexusPress core text domains
+        $this->register('default', NX_LANG_DIR);
+        
+        // Register plugin text domains directory
+        $this->register('plugins', NX_LANG_DIR . '/plugins');
+        
+        // Register theme text domains directory
+        $this->register('themes', NX_LANG_DIR . '/themes');
+    }
 }

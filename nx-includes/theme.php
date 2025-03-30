@@ -6,6 +6,40 @@
  * @subpackage Theme
  */
 
+// For development, explicitly set the default theme if not set
+if (!isset($GLOBALS['nx_theme_directories'])) {
+    $GLOBALS['nx_theme_directories'] = array();
+}
+
+// Add debug theme as a fallback
+function nx_register_debug_theme() {
+    // First check if there's a custom active theme file
+    if (file_exists(NX_CONTENT_DIR . '/active-theme.txt')) {
+        $active_theme = trim(file_get_contents(NX_CONTENT_DIR . '/active-theme.txt'));
+        if (is_dir(NX_CONTENT_DIR . '/themes/' . $active_theme)) {
+            update_option('stylesheet', $active_theme);
+            update_option('template', $active_theme);
+            return;
+        }
+    }
+    
+    // Fallback themes if no active theme is set
+    if (is_dir(NX_CONTENT_DIR . '/themes/basic-theme')) {
+        // Use our new basic theme if it exists
+        update_option('stylesheet', 'basic-theme');
+        update_option('template', 'basic-theme');
+    } elseif (is_dir(NX_CONTENT_DIR . '/themes/debug-theme')) {
+        // Or fallback to debug theme
+        update_option('stylesheet', 'debug-theme');
+        update_option('template', 'debug-theme');
+    } else {
+        // Last resort, use twentytwentyfive
+        update_option('stylesheet', 'twentytwentyfive');
+        update_option('template', 'twentytwentyfive');
+    }
+}
+add_action('after_setup_theme', 'nx_register_debug_theme', 1);
+
 /**
  * Returns an array of NX_Theme objects based on the arguments.
  *
@@ -18,19 +52,7 @@
  *
  * @param array $args {
  *     Optional. The search arguments.
- *
- *     @type mixed $errors  True to return themes with errors, false to return
- *                          themes without errors, null to return all themes.
- *                          Default false.
- *     @type mixed $allowed (Multisite) True to return only allowed themes for a site.
- *                          False to return only disallowed themes for a site.
- *                          'site' to return only site-allowed themes.
- *                          'network' to return only network-allowed themes.
- *                          Null to return all themes. Default null.
- *     @type int   $blog_id (Multisite) The blog ID used to calculate which themes
- *                          are allowed. Default 0, synonymous for the current blog.
  * }
- * @return NX_Theme[] Array of NX_Theme objects.
  */
 function nx_get_themes( $args = array() ) {
 	global $nx_theme_directories;

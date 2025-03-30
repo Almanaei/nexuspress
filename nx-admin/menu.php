@@ -392,7 +392,7 @@ $_nx_real_parent_file['post.php']       = 'edit.php';
 $_nx_real_parent_file['post-new.php']   = 'edit.php';
 $_nx_real_parent_file['edit-pages.php'] = 'edit.php?post_type=page';
 $_nx_real_parent_file['page-new.php']   = 'edit.php?post_type=page';
-$_nx_real_parent_file[\Wnxmu\Wadmin.php'] = 'tools.php';
+$_nx_real_parent_file['mu-admin.php'] = 'tools.php';
 $_nx_real_parent_file['ms-admin.php']   = 'tools.php';
 
 // Ensure backward compatibility.

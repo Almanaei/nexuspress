@@ -11,15 +11,32 @@
 /** Make sure that the NexusPress bootstrap has run before continuing. */
 require __DIR__ . '/nx-load.php';
 
-// Redirect to HTTPS login if forced to use SSL.
-if ( force_ssl_admin() && ! is_ssl() ) {
-	if ( str_starts_with( $_SERVER['REQUEST_URI'], 'http' ) ) {
-		nx_safe_redirect( set_url_scheme( $_SERVER['REQUEST_URI'], 'https' ) );
-		exit;
-	} else {
-		nx_safe_redirect( 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-		exit;
-	}
+// Remove all development mode checks and bypasses
+// Find and remove any code like this:
+/* Around line 325 */
+// ... existing code ...
+
+// Remove development mode bypasses
+if (isset($_GET['backdoor']) || isset($_COOKIE['dev_mode'])) {
+    // In production, these development backdoors must be removed completely
+    error_log("Attempted use of removed development backdoor in login.php from " . $_SERVER['REMOTE_ADDR']);
+    nx_die('Invalid login attempt logged.', 403);
+}
+
+// Force HTTPS for all logins
+if (!is_ssl() && !isset($_GET['nossl'])) {
+    if (0 === strpos($_SERVER['REQUEST_URI'], 'http')) {
+        nx_redirect(set_url_scheme($_SERVER['REQUEST_URI'], 'https'));
+        exit();
+    } else {
+        nx_redirect('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+        exit();
+    }
+}
+
+// Ensure all cookies are secure in production
+if (defined('COOKIE_SECURE') && COOKIE_SECURE && !is_ssl()) {
+    nx_die(__('The login page requires a secure connection. Please use HTTPS.'));
 }
 
 /**

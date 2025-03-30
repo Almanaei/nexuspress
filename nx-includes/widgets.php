@@ -119,6 +119,13 @@ $GLOBALS['_nx_deprecated_widgets_callbacks'] = array(
  */
 function register_widget( $widget ) {
 	global $nx_widget_factory;
+	
+	// Check if $nx_widget_factory is null and initialize it if needed
+	if (!isset($nx_widget_factory) || !is_object($nx_widget_factory)) {
+		require_once ABSPATH . 'nx-includes/class-nx-widget-factory.php';
+		$nx_widget_factory = new NX_Widget_Factory();
+		error_log('Warning: $nx_widget_factory was not properly initialized before register_widget() call');
+	}
 
 	$nx_widget_factory->register( $widget );
 }
@@ -141,6 +148,13 @@ function register_widget( $widget ) {
  */
 function unregister_widget( $widget ) {
 	global $nx_widget_factory;
+
+	// Check if $nx_widget_factory is null and initialize it if needed
+	if (!isset($nx_widget_factory) || !is_object($nx_widget_factory)) {
+		require_once ABSPATH . 'nx-includes/class-nx-widget-factory.php';
+		$nx_widget_factory = new NX_Widget_Factory();
+		error_log('Warning: $nx_widget_factory was not properly initialized before unregister_widget() call');
+	}
 
 	$nx_widget_factory->unregister( $widget );
 }

@@ -94,6 +94,14 @@ nx_enqueue_style( 'colors' );
 nx_enqueue_script( 'utils' );
 nx_enqueue_script( 'svg-painter' );
 
+// Force include essential admin CSS directly
+echo '<link rel="stylesheet" href="/nx-admin/css/common.css" type="text/css" />';
+echo '<link rel="stylesheet" href="/nx-admin/css/forms.css" type="text/css" />';
+echo '<link rel="stylesheet" href="/nx-admin/css/admin-menu.css" type="text/css" />';
+echo '<link rel="stylesheet" href="/nx-admin/css/dashboard.css" type="text/css" />';
+echo '<link rel="stylesheet" href="/nx-admin/css/list-tables.css" type="text/css" />';
+echo '<link rel="stylesheet" href="/nx-admin/css/nx-admin.css" type="text/css" />';
+
 $admin_body_class = preg_replace( '/[^a-z0-9_-]+/i', '-', $hook_suffix );
 ?>
 <script type="text/javascript">

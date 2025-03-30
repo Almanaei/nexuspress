@@ -4,18 +4,16 @@
  *
  * @package NexusPress
  */
+require_once __DIR__ . '/nx-load.php';
 
-if ( ! isset( $nx_did_header ) ) {
+// Set up the NexusPress query.
+$nx = nx();
 
-	$nx_did_header = true;
-
-	// Load the NexusPress library.
-	require_once __DIR__ . '/nx-load.php';
-
-	// Set up the NexusPress query.
-	nx();
-
-	// Load the theme template.
-	require_once ABSPATH . NXINC . '/template-loader.php';
-
+// Ensure the NX_Query object is initialized
+global $nx_query;
+if (null === $nx_query) {
+        $nx_query = new NX_Query();
 }
+
+// Load the theme template.
+require_once ABSPATH . NXINC . '/template-loader.php'; 

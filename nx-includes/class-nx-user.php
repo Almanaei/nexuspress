@@ -7,6 +7,9 @@
  * @since 4.4.0
  */
 
+// DEVELOPMENT: Skip class definition if already defined in admin.php
+if (!class_exists('NX_User')):
+
 /**
  * Core class used to implement the NX_User object.
  *

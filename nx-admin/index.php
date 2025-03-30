@@ -6,8 +6,33 @@
  * @subpackage Administration
  */
 
+// Force enable scripts and styles for admin
+if (!defined('NX_SCRIPTS_DISABLED')) {
+    define('NX_SCRIPTS_DISABLED', false);
+}
+if (!defined('NX_STYLES_DISABLED')) {
+    define('NX_STYLES_DISABLED', false);
+}
+
 /** Load NexusPress Bootstrap */
 require_once __DIR__ . '/admin.php';
+
+// Handle authentication in production environment
+// This will redirect to login if not authenticated
+if (!is_user_logged_in()) {
+    // Store the current URL to redirect back after login
+    $redirect_to = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/nx-admin/';
+    $login_url = site_url('/nx-login.php?redirect_to=' . urlencode($redirect_to));
+    
+    // Clear any output before redirecting
+    if (ob_get_level()) {
+        ob_clean();
+    }
+    
+    // Redirect to login page with proper return URL
+    header("Location: $login_url");
+    exit;
+}
 
 /** Load NexusPress dashboard API */
 require_once ABSPATH . 'nx-admin/includes/dashboard.php';

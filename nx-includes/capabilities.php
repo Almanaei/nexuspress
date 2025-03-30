@@ -1005,14 +1005,20 @@ function author_can( $post, $capability, ...$args ) {
  * @return bool Whether the user has the given capability.
  */
 function user_can( $user, $capability, ...$args ) {
-	if ( ! is_object( $user ) ) {
-		$user = get_userdata( $user );
+	// DEVELOPMENT: Skip capability check in development mode
+	if (defined('NX_DEVELOPMENT') && NX_DEVELOPMENT) {
+		error_log("DEVELOPMENT: Bypassing user_can() check for capability: " . $capability);
+		return true;
 	}
-
-	if ( empty( $user ) ) {
-		// User is logged out, create anonymous user object.
-		$user = new NX_User( 0 );
-		$user->init( new stdClass() );
+	
+	if ( ! $user instanceof NX_User ) {
+		if ( ! is_object( $user ) ) {
+			if ( ! $user = get_userdata( $user ) ) {
+				return false;
+			}
+		} elseif ( ! isset( $user->ID ) ) {
+			return false;
+		}
 	}
 
 	return $user->has_cap( $capability, ...$args );

@@ -225,7 +225,7 @@ function verify_no_nexuspress_references() {
     
     echo "  - Files checked: {$results['files_checked']}\n";
     echo "  - 'NexusPress' references found: {$results['nexuspress_refs']}\n";
-    echo "  - 'nx_' references found: {$results['nx_refs']}\n";
+    echo "  - 'wp_' references found: {$results['nx_refs']}\n";
     
     if (count($results['problem_files']) > 0) {
         echo "  - Found " . count($results['problem_files']) . " files with NexusPress references\n";
@@ -285,7 +285,7 @@ function check_files_for_nexuspress_refs($dir, &$results, $excluded_dirs) {
                 
                 // Count NexusPress references
                 $nx_count = preg_match_all('/[W|w]ord[P|p]ress/i', $content, $matches);
-                $nx_func_count = preg_match_all('/\bnx_/i', $content, $matches);
+                $nx_func_count = preg_match_all('/\bwp_/i', $content, $matches);
                 
                 if ($nx_count > 0 || $nx_func_count > 0) {
                     $results['nexuspress_refs'] += $nx_count;
@@ -297,7 +297,7 @@ function check_files_for_nexuspress_refs($dir, &$results, $excluded_dirs) {
     }
 }
 
-// New function to fix NexusPress references in files
+// Function to fix NexusPress references in files
 function fix_nexuspress_references($file_path) {
     if (!file_exists($file_path)) {
         return false;
@@ -314,13 +314,12 @@ function fix_nexuspress_references($file_path) {
     // Check file extension to determine appropriate replacement type
     $ext = pathinfo($file_path, PATHINFO_EXTENSION);
     
-    // Skip certain files that are documentation about NexusPress
+    // Skip certain files that are documentation about NexusPress to NexusPress transition
     $filename = basename($file_path);
     if (strpos($filename, 'migration-guide') !== false || 
         strpos($filename, 'conversion-report') !== false ||
         strpos($filename, 'changelog') !== false ||
-        strpos($content, '* @package NexusPress') !== false ||
-        strpos($content, '* NexusPress implementation') !== false) {
+        strpos($filename, 'README.md') !== false) {
         // These files might legitimately need to reference NexusPress
         return true;
     }
@@ -328,13 +327,13 @@ function fix_nexuspress_references($file_path) {
     // For PHP files
     if ($ext === 'php') {
         // Replace function calls first (more specific before general)
-        $content = preg_replace('/\bnx_([a-zA-Z0-9_]+)/', 'nx_$1', $content);
-        $content = preg_replace('/\bNX_([a-zA-Z0-9_]+)/', 'NX_$1', $content);
+        $content = preg_replace('/\bwp_([a-zA-Z0-9_]+)/', 'nx_$1', $content);
+        $content = preg_replace('/\bWP_([a-zA-Z0-9_]+)/', 'NX_$1', $content);
         
         // Replace NexusPress text (case-sensitive)
         $content = str_replace('NexusPress', 'NexusPress', $content);
         $content = str_replace('nexuspress', 'nexuspress', $content);
-        $content = str_replace('WORDPRESS', 'NEXUSPRESS', $content);
+        $content = str_replace('NEXUSPRESS', 'NEXUSPRESS', $content);
     }
     // For JavaScript files
     else if ($ext === 'js') {
@@ -342,15 +341,15 @@ function fix_nexuspress_references($file_path) {
         $content = str_replace('NexusPress', 'NexusPress', $content);
         $content = str_replace('nexuspress', 'nexuspress', $content);
         $content = str_replace('wp.', 'nx.', $content);
-        $content = preg_replace('/\bnx([A-Z])/', 'nx$1', $content);
+        $content = preg_replace('/\bwp([A-Z])/', 'nx$1', $content);
     }
     // For CSS files
     else if ($ext === 'css') {
         // Replace NexusPress text and CSS classes
         $content = str_replace('NexusPress', 'NexusPress', $content);
         $content = str_replace('nexuspress', 'nexuspress', $content);
-        $content = preg_replace('/\.nx-/', '.nx-', $content);
-        $content = preg_replace('/#nx-/', '#nx-', $content);
+        $content = preg_replace('/\.wp-/', '.nx-', $content);
+        $content = preg_replace('/#wp-/', '#nx-', $content);
     }
     // For other text files
     else {
@@ -606,4 +605,11 @@ $steps_completed += package_cms_for_deployment() ? 1 : 0;
 echo "\n========== FINALIZATION PROCESS COMPLETE ==========\n\n";
 echo "Completed $steps_completed of $total_steps finalization steps.\n";
 echo "The NexusPress CMS is now ready for deployment.\n\n";
-echo "CONVERSION PROCESS COMPLETE\n"; 
+echo "CONVERSION PROCESS COMPLETE\n";
+
+// Execute specific functions when this file is run directly
+if (basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
+    echo "\n\nStarting NexusPress to NexusPress conversion...\n";
+    verify_no_nexuspress_references();
+    echo "\nConversion process complete!\n";
+} 

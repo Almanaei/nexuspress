@@ -91,24 +91,32 @@ function get_locale() {
  * @param int|NX_User $user User's ID or a NX_User object. Defaults to current user.
  * @return string The locale of the user.
  */
-function get_user_locale( $user = 0 ) {
-	$user_object = false;
+function get_user_locale( $user_id = 0 ) {
+	$user = false;
 
-	if ( 0 === $user && function_exists( 'nx_get_current_user' ) ) {
-		$user_object = nx_get_current_user();
-	} elseif ( $user instanceof NX_User ) {
-		$user_object = $user;
-	} elseif ( $user && is_numeric( $user ) ) {
-		$user_object = get_user_by( 'id', $user );
+	// DEVELOPMENT: Set default locale in development mode
+	if (defined('NX_DEVELOPMENT') && NX_DEVELOPMENT) {
+		error_log("DEVELOPMENT: Using default locale 'en_US' for user");
+		return 'en_US';
 	}
 
-	if ( ! $user_object ) {
+	if ( $user_id > 0 ) {
+		$user = get_userdata( $user_id );
+	} elseif ( nx_get_current_user() ) {
+		$user = nx_get_current_user();
+	}
+
+	if ( ! $user ) {
 		return get_locale();
 	}
 
-	$locale = $user_object->locale;
+	// Ensure the user object has a locale property
+	if (!isset($user->locale)) {
+		error_log("Warning: User object missing locale property, defaulting to site locale");
+		return get_locale();
+	}
 
-	return $locale ? $locale : get_locale();
+	return $user->locale ? $user->locale : get_locale();
 }
 
 /**

@@ -263,6 +263,17 @@ function _mb_strlen( $str, $encoding = null ) {
 	return --$count;
 }
 
+/**
+ * Checks if the site's charset is UTF-8.
+ *
+ * @since 6.1.0
+ *
+ * @return bool True if the site's charset is UTF-8, false otherwise.
+ */
+function is_utf8_charset() {
+	return _is_utf8_charset( get_option( 'blog_charset' ) );
+}
+
 if ( ! function_exists( 'hash_hmac' ) ) :
 	/**
 	 * Compat function to mimic hash_hmac().
