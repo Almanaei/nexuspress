@@ -1,0 +1,75 @@
+# BEGIN NexusPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Handle WordPress to NexusPress redirects with proper 301 redirects
+RewriteRule ^wp-admin/?(.*)$ nx-admin/$1 [R=301,L]
+RewriteRule ^wp-login\.php(.*)$ nx-login.php$1 [R=301,L]
+RewriteRule ^wp-content/(.*)$ nx-content/$1 [R=301,L]
+RewriteRule ^wp-includes/(.*)$ nx-includes/$1 [R=301,L]
+RewriteRule ^wp-(.*)$ nx-$1 [R=301,L]
+
+# Special rules for nx-admin - force HTTPS in production
+RewriteCond %{HTTPS} !=on
+RewriteRule ^nx-admin(.*) https://%{HTTP_HOST}/nx-admin$1 [R=301,L]
+
+# Force HTTPS for login
+RewriteCond %{HTTPS} !=on
+RewriteRule ^nx-login\.php(.*) https://%{HTTP_HOST}/nx-login.php$1 [R=301,L]
+
+# Direct nx-admin requests to the proper file
+RewriteRule ^nx-admin/?$ nx-admin/index.php [L]
+RewriteRule ^nx-admin/(.+) nx-admin/$1 [L]
+
+# Continue with standard NexusPress rules
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+  # Protect against XSS attacks
+  Header set X-XSS-Protection "1; mode=block"
+  
+  # Prevent MIME-type sniffing
+  Header set X-Content-Type-Options "nosniff"
+  
+  # Prevent clickjacking
+  Header set X-Frame-Options "SAMEORIGIN"
+  
+  # HSTS (HTTP Strict Transport Security) - uncomment in production with HTTPS
+  Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  
+  # Referrer policy
+  Header set Referrer-Policy "no-referrer-when-downgrade"
+  
+  # Content Security Policy - basic protection
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;"
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^\.(.*)$|^nx-config\.php$|^production-config\.php$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# Block access to other sensitive files
+<FilesMatch "\.(bak|config|sql|ini|log|sh|inc|swp)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# Limit file uploads to 8MB (adjust as needed)
+<IfModule mod_php7.c>
+  php_value upload_max_filesize 8M
+  php_value post_max_size 8M
+  php_value max_execution_time 300
+  php_value max_input_time 300
+</IfModule>
+# END NexusPress 

@@ -41,4 +41,46 @@ build/
 # Ignore backup files
 *~
 *.bak
-*.swp 
+*.swp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependency directories
+/vendor/
+/node_modules/
+
+# Build artifacts
+/nexuspress-production/
+/nexuspress-production.tar.gz
+/nexuspress-production.zip
+*.bak
+*.backup
+*.old
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+/nx-content/debug.log
+/nx-error-log.txt
+
+# Database files
+*.sql
+*.sqlite
+
+# Environment files
+.env
+
+# Temporary files
+*.tmp
+*.temp
+
+# Don't ignore these important files
+!.htaccess
+!nx-admin/.htaccess 
